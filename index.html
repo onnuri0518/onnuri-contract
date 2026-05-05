@@ -819,13 +819,22 @@ input[type="text"]:focus { outline: none; }
     .desktop-only { display: block !important; }
 }
 
+
+@media print {
+    .desktop-only input[type="text"] {
+        text-overflow: clip !important;
+        white-space: nowrap !important;
+        overflow: visible !important;
+    }
+}
+
 </style>
 </head>
 <body>
 
 <div class="toolbar">
     <span class="brand">㈜온누리모터스 · 자동차양도증명서</span>
-    <button onclick="window.print()">📄 인쇄·PDF</button>
+    <button onclick="syncMobileToDesktop();setTimeout(function(){window.print()},150)">📄 인쇄·PDF</button>
     <button onclick="shareDoc()">📤 공유</button>
     <button onclick="cycleDocType()">🔄 <span id="doc-type-btn-label">매수인용</span></button>
     <button onclick="document.getElementById('stamp-upload').click()">🖋️ 직인</button>
@@ -879,7 +888,7 @@ input[type="text"]:focus { outline: none; }
         <th>성명(명칭)</th>
         <td class="text-left">
             <div class="flex-row">
-                <input type="text" style="flex:1;text-align:left;">
+                <input type="text" style="flex:1;text-align:left;" data-d-sync="seller_name">
                 <span class="sig-mark sig-overlay" data-sig-id="seller_name" data-sig-label="양도인(갑) 성명란">(서명 또는 인)</span>
             </div>
         </td>
@@ -887,18 +896,18 @@ input[type="text"]:focus { outline: none; }
         <th>성명(명칭)</th>
         <td class="text-left">
             <div class="flex-row">
-                <input type="text" style="flex:1;text-align:left;">
+                <input type="text" style="flex:1;text-align:left;" data-d-sync="buyer_name">
                 <span class="sig-mark sig-overlay" data-sig-id="buyer_name" data-sig-label="양수인(을) 성명란">(서명 또는 인)</span>
             </div>
         </td>
     </tr>
     <tr>
-        <th>전화번호</th><td class="text-left"><input type="text" style="text-align:left;"></td>
-        <th>전화번호</th><td class="text-left"><input type="text" style="text-align:left;"></td>
+        <th>전화번호</th><td class="text-left"><input type="text" style="text-align:left;" data-d-sync="seller_phone"></td>
+        <th>전화번호</th><td class="text-left"><input type="text" style="text-align:left;" data-d-sync="buyer_phone"></td>
     </tr>
     <tr>
-        <th>주 소</th><td class="text-left"><input type="text" style="text-align:left;"></td>
-        <th>주 소</th><td class="text-left"><input type="text" style="text-align:left;"></td>
+        <th>주 소</th><td class="text-left"><input type="text" style="text-align:left;" data-d-sync="seller_addr"></td>
+        <th>주 소</th><td class="text-left"><input type="text" style="text-align:left;" data-d-sync="buyer_addr"></td>
     </tr>
 
     <!-- 자동차매매업자 -->
@@ -921,7 +930,7 @@ input[type="text"]:focus { outline: none; }
     </tr>
     <tr>
         <th>취 급 자</th>
-        <td colspan="3" class="text-left"><input type="text" style="text-align:left;"></td>
+        <td colspan="3" class="text-left"><input type="text" style="text-align:left;" data-d-sync="agent_name"></td>
         <td class="text-left">
             <span class="sig-mark sig-overlay" data-sig-id="agent" data-sig-label="취급자란" style="display:block;text-align:center;padding:4px;">(서명 또는 인)</span>
         </td>
@@ -930,10 +939,10 @@ input[type="text"]:focus { outline: none; }
     <!-- 계약연월일 -->
     <tr>
         <th colspan="3">계 약 연 월 일</th>
-        <td colspan="4" class="text-center">
-            <input type="text" class="sign-input" style="width:60px;"> 년 &nbsp;&nbsp;
-            <input type="text" class="sign-input" style="width:40px;"> 월 &nbsp;&nbsp;
-            <input type="text" class="sign-input" style="width:40px;"> 일
+        <td colspan="4" class="text-center" data-d-sync-target="contract_date">
+            <input type="text" class="sign-input" style="width:60px;" data-d-sync-part="y"> 년 &nbsp;&nbsp;
+            <input type="text" class="sign-input" style="width:40px;" data-d-sync-part="m"> 월 &nbsp;&nbsp;
+            <input type="text" class="sign-input" style="width:40px;" data-d-sync-part="d"> 일
         </td>
     </tr>
 
@@ -945,67 +954,67 @@ input[type="text"]:focus { outline: none; }
     <!-- 차량정보 -->
     <tr>
         <th colspan="3">자동차등록번호</th>
-        <td class="text-left"><input type="text" style="text-align:left;"></td>
+        <td class="text-left"><input type="text" style="text-align:left;" data-d-sync="car_reg"></td>
         <th colspan="2">주 행 거 리</th>
-        <td class="text-right"><input type="text" style="width:75%;text-align:right;"> km</td>
+        <td class="text-right"><input type="text" style="width:75%;text-align:right;" data-d-sync="mileage"> km</td>
     </tr>
     <tr>
         <th colspan="3">차 &nbsp;&nbsp; 종</th>
-        <td class="text-left"><input type="text" style="text-align:left;"></td>
+        <td class="text-left"><input type="text" style="text-align:left;" data-d-sync="car_kind"></td>
         <th colspan="2">차 &nbsp;&nbsp; 명</th>
-        <td class="text-left"><input type="text" style="text-align:left;"></td>
+        <td class="text-left"><input type="text" style="text-align:left;" data-d-sync="car_name"></td>
     </tr>
     <tr>
         <th colspan="3">차 대 번 호</th>
-        <td class="text-left"><input type="text" style="text-align:left;"></td>
+        <td class="text-left"><input type="text" style="text-align:left;" data-d-sync="vin"></td>
         <th colspan="2">계 &nbsp; 약 &nbsp; 금</th>
-        <td class="text-left">
-            <input type="text" class="sign-input" style="width:30px;"> 년
-            <input type="text" class="sign-input" style="width:22px;"> 월
-            <input type="text" class="sign-input" style="width:22px;"> 일 일금
-            <input type="text" class="sign-input" style="width:50px;text-align:right;"> 원정
+        <td class="text-left" data-d-sync-target="deposit_full">
+            <input type="text" class="sign-input" style="width:30px;" data-d-sync-part="y"> 년
+            <input type="text" class="sign-input" style="width:22px;" data-d-sync-part="m"> 월
+            <input type="text" class="sign-input" style="width:22px;" data-d-sync-part="d"> 일 일금
+            <input type="text" class="sign-input" style="width:50px;text-align:right;" data-d-sync="deposit"> 원정
         </td>
     </tr>
     <tr>
         <th colspan="3">중 &nbsp; 도 &nbsp; 금</th>
-        <td class="text-left">
-            <input type="text" class="sign-input" style="width:30px;"> 년
-            <input type="text" class="sign-input" style="width:22px;"> 월
-            <input type="text" class="sign-input" style="width:22px;"> 일 일금
-            <input type="text" class="sign-input" style="width:55px;text-align:right;"> 원정
+        <td class="text-left" data-d-sync-target="middle_full">
+            <input type="text" class="sign-input" style="width:30px;" data-d-sync-part="y"> 년
+            <input type="text" class="sign-input" style="width:22px;" data-d-sync-part="m"> 월
+            <input type="text" class="sign-input" style="width:22px;" data-d-sync-part="d"> 일 일금
+            <input type="text" class="sign-input" style="width:55px;text-align:right;" data-d-sync="middle"> 원정
         </td>
         <th colspan="2">잔 &nbsp;&nbsp;&nbsp; 금</th>
-        <td class="text-left">
-            <input type="text" class="sign-input" style="width:30px;"> 년
-            <input type="text" class="sign-input" style="width:22px;"> 월
-            <input type="text" class="sign-input" style="width:22px;"> 일 일금
-            <input type="text" class="sign-input" style="width:50px;text-align:right;"> 원정
+        <td class="text-left" data-d-sync-target="balance_full">
+            <input type="text" class="sign-input" style="width:30px;" data-d-sync-part="y"> 년
+            <input type="text" class="sign-input" style="width:22px;" data-d-sync-part="m"> 월
+            <input type="text" class="sign-input" style="width:22px;" data-d-sync-part="d"> 일 일금
+            <input type="text" class="sign-input" style="width:50px;text-align:right;" data-d-sync="balance"> 원정
         </td>
     </tr>
     <tr>
         <th colspan="3">매 매 금 액</th>
-        <td class="text-right">일금 <input type="text" class="sign-input" style="width:60%;text-align:right;"> 원정</td>
+        <td class="text-right">일금 <input type="text" class="sign-input" style="width:60%;text-align:right;" data-d-sync="total_amount"> 원정</td>
         <th colspan="2">등록비 및<br>대행수수료</th>
         <td class="text-left" style="line-height:1.5;">
-            등 록 비 : 일금 <input type="text" class="sign-input" style="width:38%;text-align:right;"> 원정<br>
-            대행수수료 : 일금 <input type="text" class="sign-input" style="width:33%;text-align:right;"> 원정
+            등 록 비 : 일금 <input type="text" class="sign-input" style="width:38%;text-align:right;" data-d-sync="reg_fee"> 원정<br>
+            대행수수료 : 일금 <input type="text" class="sign-input" style="width:33%;text-align:right;" data-d-sync="agent_fee"> 원정
         </td>
     </tr>
     <tr>
         <th colspan="3">매매알선수수료</th>
-        <td class="text-right">일금 <input type="text" class="sign-input" style="width:60%;text-align:right;"> 원정</td>
+        <td class="text-right">일금 <input type="text" class="sign-input" style="width:60%;text-align:right;" data-d-sync="broker_fee"> 원정</td>
         <th colspan="2">관 리 비 용</th>
-        <td class="text-right">일금 <input type="text" class="sign-input" style="width:60%;text-align:right;"> 원정</td>
+        <td class="text-right">일금 <input type="text" class="sign-input" style="width:60%;text-align:right;" data-d-sync="mgmt_fee"> 원정</td>
     </tr>
     <tr>
         <th colspan="3">자동차인도일</th>
-        <td class="text-center">
-            <input type="text" class="sign-input" style="width:50px;"> 년
-            <input type="text" class="sign-input" style="width:35px;"> 월
-            <input type="text" class="sign-input" style="width:35px;"> 일
+        <td class="text-center" data-d-sync-target="delivery_date">
+            <input type="text" class="sign-input" style="width:50px;" data-d-sync-part="y"> 년
+            <input type="text" class="sign-input" style="width:35px;" data-d-sync-part="m"> 월
+            <input type="text" class="sign-input" style="width:35px;" data-d-sync-part="d"> 일
         </td>
         <th colspan="2">압류 및 저당권<br>등 록 여 부</th>
-        <td class="text-left"><input type="text" style="text-align:left;"></td>
+        <td class="text-left"><input type="text" style="text-align:left;" data-d-sync="lien"></td>
     </tr>
 
     <!-- 약관 -->
@@ -1041,7 +1050,7 @@ input[type="text"]:focus { outline: none; }
         </td>
         <td colspan="2" class="special-right">
             <div class="insure-box">
-                <strong>성능책임보험료</strong> &nbsp; <input type="text" class="sign-input" style="width:60px;text-align:right;"> 원
+                <strong>성능책임보험료</strong> &nbsp; <input type="text" class="sign-input" style="width:60px;text-align:right;" data-d-sync="insure_fee"> 원
             </div>
             <div class="stmt-text">
                 「자동차등록규칙」 제33조제2항제2호에 따라 위의 중고자동차매매계약서 기재내용과 같이 양도하였음을 증명합니다.
@@ -1058,12 +1067,12 @@ input[type="text"]:focus { outline: none; }
     <tr class="signature-row">
         <td colspan="4" class="text-left" style="white-space:nowrap;">
             <strong>양 도 인</strong> &nbsp;
-            <input type="text" class="sign-input" style="width:40%;">
+            <input type="text" class="sign-input" style="width:40%;" data-d-sync="seller_name">
             &nbsp;<span class="sig-overlay" data-sig-id="final_seller" data-sig-label="양도인 최종 서명" style="font-size:0.9em;color:#444;padding:6px 16px;display:inline-block;min-width:80px;">(서명 또는 인)</span>
         </td>
         <td colspan="3" class="text-left" style="white-space:nowrap;">
             <strong>양 수 인</strong> &nbsp;
-            <input type="text" class="sign-input" style="width:40%;">
+            <input type="text" class="sign-input" style="width:40%;" data-d-sync="buyer_name">
             &nbsp;<span class="sig-overlay" data-sig-id="final_buyer" data-sig-label="양수인 최종 서명" style="font-size:0.9em;color:#444;padding:6px 16px;display:inline-block;min-width:80px;">(서명 또는 인)</span>
         </td>
     </tr>
@@ -1532,21 +1541,155 @@ var SigSystem = {
 //  데스크탑 ↔ 모바일 입력 동기화
 // =====================================================
 // 모바일에서 입력하면 데스크탑(인쇄용) input에 자동 반영
-function setupMobileSync() {
-    // 모바일 일반 텍스트
+
+// =====================================================
+//  모바일 ↔ 데스크탑 동기화 시스템 (완전 재작성)
+// =====================================================
+var SyncMap = {
+    // 1:1 단순 매핑 (모바일 input 값 → 데스크탑 input 값)
+    simple: [
+        'seller_name', 'seller_phone', 'seller_addr',
+        'buyer_name', 'buyer_phone', 'buyer_addr',
+        'agent_name',
+        'car_reg', 'car_kind', 'car_name', 'vin', 'mileage', 'lien',
+        'total_amount', 'deposit', 'middle', 'balance',
+        'reg_fee', 'agent_fee', 'broker_fee', 'mgmt_fee', 'insure_fee'
+    ],
+    // 날짜 분리 매핑: 모바일 "YYYY-MM-DD" 또는 "YYYYMMDD" → 데스크탑 [년][월][일]
+    date: [
+        { mobile: 'delivery_date', desktop: 'delivery_date' },
+        { mobile: 'contract_date', desktop: 'contract_date' }
+    ]
+};
+
+// 모바일 input 값 가져오기
+function getMobileValue(key) {
+    // [data-sync="key"] 안의 input 또는 [data-sync-mobile="key"]
+    var el = document.querySelector('.mobile-only [data-sync="' + key + '"] input');
+    if (el) return el.value;
+    el = document.querySelector('.mobile-only [data-sync-mobile="' + key + '"]');
+    if (el) return el.value;
+    return '';
+}
+
+// 모바일 input 값 설정
+function setMobileValue(key, val) {
+    var el = document.querySelector('.mobile-only [data-sync="' + key + '"] input');
+    if (el) { el.value = val; return; }
+    el = document.querySelector('.mobile-only [data-sync-mobile="' + key + '"]');
+    if (el) el.value = val;
+}
+
+// 데스크탑 input 값 설정 (단순)
+function setDesktopValue(key, val) {
+    var els = document.querySelectorAll('.desktop-only [data-d-sync="' + key + '"]');
+    els.forEach(function(el) { el.value = val; });
+}
+
+// 데스크탑 input 값 가져오기
+function getDesktopValue(key) {
+    var el = document.querySelector('.desktop-only [data-d-sync="' + key + '"]');
+    return el ? el.value : '';
+}
+
+// 날짜 분리/조합
+function parseDateString(str) {
+    if (!str) return { y: '', m: '', d: '' };
+    str = str.replace(/[^0-9]/g, '');
+    if (str.length === 8) {
+        return { y: str.substr(0,4), m: str.substr(4,2), d: str.substr(6,2) };
+    }
+    if (str.length === 6) {
+        return { y: str.substr(0,2), m: str.substr(2,2), d: str.substr(4,2) };
+    }
+    return { y: '', m: '', d: '' };
+}
+
+function syncDateMobileToDesktop(mobileKey, desktopKey) {
+    var val = getMobileValue(mobileKey);
+    var parts = parseDateString(val);
+    var target = document.querySelector('.desktop-only [data-d-sync-target="' + desktopKey + '"]');
+    if (!target) return;
+    var inputs = target.querySelectorAll('input[data-d-sync-part]');
+    inputs.forEach(function(inp) {
+        var part = inp.dataset.dSyncPart;
+        if (parts[part] !== undefined) inp.value = parts[part];
+    });
+}
+
+// 핵심 함수 - 모바일 값을 모두 데스크탑으로 복사
+function syncMobileToDesktop() {
+    SyncMap.simple.forEach(function(key) {
+        var v = getMobileValue(key);
+        if (v) setDesktopValue(key, v);
+    });
+    SyncMap.date.forEach(function(m) {
+        syncDateMobileToDesktop(m.mobile, m.desktop);
+    });
+    // 데스크탑에 직인 동기화
+    var dStamp = document.getElementById('stamp-img');
+    var mStamp = document.getElementById('m-stamp-img');
+    if (dStamp && mStamp && mStamp.src) dStamp.src = mStamp.src;
+}
+
+// 데스크탑 → 모바일 (PC에서 입력한 후 모바일에서 봐도 보이게)
+function syncDesktopToMobile() {
+    SyncMap.simple.forEach(function(key) {
+        var v = getDesktopValue(key);
+        if (v) setMobileValue(key, v);
+    });
+}
+
+// 입력 시 자동 동기화 - 모바일 input
+function setupBidirectionalSync() {
+    // 모바일 → 데스크탑: 모바일 input 변경 시 데스크탑에 복사 + 저장
     document.querySelectorAll('.mobile-only [data-sync] input, .mobile-only [data-sync-mobile]').forEach(function(input) {
-        var parent = input.closest('[data-sync], [data-sync-mobile]') || input.parentElement;
-        var key = parent.dataset.sync || input.dataset.syncMobile;
+        var parent = input.closest('[data-sync]');
+        var key = parent ? parent.dataset.sync : input.dataset.syncMobile;
+        if (!key) return;
+        // 저장된 값 복원
+        try {
+            var saved = localStorage.getItem('onnuri_sync_' + key);
+            if (saved !== null) input.value = saved;
+        } catch(e){}
+        // 변경 시 즉시 동기화 + 저장
+        input.addEventListener('input', function() {
+            try { localStorage.setItem('onnuri_sync_' + key, input.value); } catch(e){}
+            // 단순 키
+            if (SyncMap.simple.indexOf(key) !== -1) {
+                setDesktopValue(key, input.value);
+            }
+            // 날짜 키
+            SyncMap.date.forEach(function(m) {
+                if (m.mobile === key) syncDateMobileToDesktop(m.mobile, m.desktop);
+            });
+        });
+    });
+
+    // 데스크탑 → 모바일: 데스크탑 input 변경 시 모바일에 복사 + 저장
+    document.querySelectorAll('.desktop-only [data-d-sync]').forEach(function(input) {
+        var key = input.dataset.dSync;
         if (!key) return;
         try {
-            var saved = localStorage.getItem('onnuri_m_' + key);
-            if (saved) input.value = saved;
+            var saved = localStorage.getItem('onnuri_sync_' + key);
+            if (saved !== null && !input.value) input.value = saved;
         } catch(e){}
         input.addEventListener('input', function() {
-            try { localStorage.setItem('onnuri_m_' + key, input.value); } catch(e){}
+            try { localStorage.setItem('onnuri_sync_' + key, input.value); } catch(e){}
+            if (SyncMap.simple.indexOf(key) !== -1) {
+                setMobileValue(key, input.value);
+            }
         });
     });
 }
+
+// 인쇄 직전 강제 동기화 (안전장치)
+window.addEventListener('beforeprint', function() {
+    syncMobileToDesktop();
+});
+
+function setupMobileSync(){ setupBidirectionalSync(); }
+
 
 // =====================================================
 //  공유 기능 (Web Share API + 다운로드)
@@ -1589,6 +1732,12 @@ function shareKakao() {
 document.addEventListener('DOMContentLoaded', function() {
     SigSystem.init();
     setupMobileSync();
+    // 페이지 로드 후 저장값 양방향 동기화 (모바일 우선 - 카드 UI에서 입력하는 게 일반적)
+    setTimeout(function() {
+        syncMobileToDesktop();
+        // 데스크탑에만 있는 값(예: 데스크탑 PC에서 입력한 경우)도 모바일로
+        syncDesktopToMobile();
+    }, 100);
     
     // 모바일 doc-type 토글 동기화
     var mDocType = document.getElementById('m-doc-type');
